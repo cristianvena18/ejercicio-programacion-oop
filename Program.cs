@@ -7,8 +7,6 @@ namespace Banco
 {
     class Program
     {
-        static AccountService accountManager;
-
         static void Main(string[] args)
         {
             Console.Write("Ingrese una cantidad de días: ");
@@ -21,26 +19,32 @@ namespace Banco
             Console.Write("Ingrese una cantidad: ");
             float amount = float.Parse(Console.ReadLine());
 
-            accountManager = new AccountService();
+            var accountManager = new AccountService();
 
             var account = accountManager.findOneByAccountNumber(number_account);
 
             if(account == null)
             {
+                Console.WriteLine("El numero de cuenta no se encontró");
                 return;
             }
 
             if(days < 0) 
             {
+                Console.WriteLine("El numero de días no puede ser negativo!");
                 return;
             }
 
             if(amount < 0)
             {
+                Console.WriteLine("El monto no puede ser negativo!");
                 return;
             }
 
-            verificateAmountValidInAccount(account, amount);
+            if(!verificateAmountValidInAccount(account, amount))
+            {
+                Console.WriteLine("El numero de cuenta no se tiene la cantidad de dinero necesaria para realizar el plazo fijo");
+            }
 
             account.Amount -= amount;
 
@@ -57,14 +61,6 @@ namespace Banco
             string algo = Console.ReadLine();
             
             Console.WriteLine("Time deposit created by $ {0} to {1} days", amount, algo);
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e) 
-        {
-            string algo = txtForm1.Text;
-            string algo2 = txtForm2.Text;
-            var account = new Account(algo, algo2);
-            accountManager.save(account);
         }
 
         public static bool verificateAmountValidInAccount(Account account, float amount)
